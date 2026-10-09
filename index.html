@@ -8,9 +8,9 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="アプリ棚">
 <meta name="format-detection" content="telephone=no">
-<link rel="apple-touch-icon" id="ico-apple">
-<link rel="icon" id="ico-fav">
-<link rel="manifest" id="manifest">
+<link rel="apple-touch-icon" href="icon-180.png?v=5">
+<link rel="icon" href="icon-192.png?v=5">
+<link rel="manifest" href="manifest.webmanifest?v=5">
 <title>アプリ棚</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,6 +49,7 @@ section.howto{background:var(--surface);border:1px solid var(--line);border-radi
 .howto h3{font-size:.95rem;margin:14px 0 4px}
 .howto ol{margin:0;padding-left:1.4em}
 .howto li{margin:2px 0}
+.line{margin:0}
 .note{color:var(--muted);font-size:.85rem;margin:12px 0 0}
 kbd{font-family:var(--body);background:var(--chip);color:var(--accent);border-radius:6px;padding:0 6px;font-weight:700}
 footer{color:var(--muted);font-size:.75rem;text-align:right}
@@ -132,22 +133,14 @@ footer{color:var(--muted);font-size:.75rem;text-align:right}
       <li>右上の <kbd>︙</kbd> を押す</li>
       <li><kbd>ホーム画面に追加</kbd> を選び、「追加」を押す</li>
     </ol>
+    <h3>LINE で送られてきたとき</h3>
+    <p class="line">LINE の中で開くと、ホーム画面に追加できません。右上の <kbd>︙</kbd>（iPhone は下の <kbd>共有</kbd>）から <kbd>ブラウザで開く</kbd> を選び、Chrome や Safari で開いてから追加してください。</p>
     <p class="note">このページ（アプリ棚）も同じやり方でホーム画面に追加できます。</p>
   </section>
-  <footer>v4</footer>
+  <footer>v5</footer>
 </div>
 
 <script>
-// ホーム画面アイコンに描く Claude Code のキャラクター
-function ccChar(ctx, ox, oy, p){
-  var px=function(x,y,w,h,col){ctx.fillStyle=col;ctx.fillRect(ox+x*p,oy+y*p,w*p,h*p);};
-  var o='#d97757';
-  px(2,0,8,6,o); px(0,2,2,2,o); px(10,2,2,2,o);               // 体と両腕
-  px(2,6,1,2,o); px(4,6,1,2,o); px(7,6,1,2,o); px(9,6,1,2,o); // 足4本
-  px(3,1,1,1,'#1a1612'); px(8,1,1,1,'#1a1612');               // 目
-}
-function roundRect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);}
-
 // URLをコピー
 document.querySelectorAll('.copy').forEach(function(b){
   b.addEventListener('click',function(){
@@ -162,34 +155,6 @@ document.querySelectorAll('.copy').forEach(function(b){
     try{ navigator.clipboard.writeText(url).then(function(){done('コピーしました')},sel); }catch(e){ sel(); }
   });
 });
-
-// ホーム画面アイコン（canvas で描く）：赤の地に棚とアプリ2つ、左上に Claude Code のキャラクター
-function drawIcon(size){
-  var cv=document.createElement('canvas'); cv.width=cv.height=size;
-  var ctx=cv.getContext('2d'), s=size/180;
-  var bg=ctx.createLinearGradient(0,0,0,size); bg.addColorStop(0,'#d9332a'); bg.addColorStop(1,'#c8231b');
-  ctx.fillStyle=bg; ctx.fillRect(0,0,size,size);
-  // 棚板と、その上のアプリ2つ
-  ctx.fillStyle='#fdf0df'; roundRect(ctx,40*s,72*s,40*s,40*s,9*s); ctx.fill();
-  ctx.fillStyle='#ffffff'; roundRect(ctx,100*s,72*s,40*s,40*s,9*s); ctx.fill();
-  ctx.fillStyle='#c8231b'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.font='700 '+(22*s)+'px "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif';
-  ctx.fillText('〒',60*s,93*s); ctx.fillText('✈',120*s,93*s);
-  ctx.fillStyle='#8a1a14'; ctx.fillRect(26*s,114*s,128*s,8*s);
-  ctx.fillStyle='#fff'; ctx.font='700 '+(30*s)+'px "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif';
-  ctx.fillText('アプリ棚',90*s,152*s);
-  ccChar(ctx,16*s,16*s,3*s);
-  return cv.toDataURL('image/png');
-}
-try{
-  var i180=drawIcon(180), i192=drawIcon(192), i512=drawIcon(512);
-  document.getElementById('ico-apple').href=i180; document.getElementById('ico-fav').href=i192;
-  var mf={name:'アプリ棚', short_name:'アプリ棚', display:'standalone', background_color:'#eef1f4', theme_color:'#c62a22',
-    start_url:location.href.split('#')[0],
-    icons:[{src:i192,sizes:'192x192',type:'image/png'},{src:i512,sizes:'512x512',type:'image/png'}]};
-  document.getElementById('manifest').href='data:application/manifest+json;charset=utf-8,'+encodeURIComponent(JSON.stringify(mf));
-}catch(e){}
-
 // =============================================================
 // Claude Code のキャラクター（ヘッダー左上）
 //   右へ歩く → 端で立ち止まって手足をちょこちょこ動かし、振り向く → 左へ戻る … を繰り返す
